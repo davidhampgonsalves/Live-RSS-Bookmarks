@@ -1,133 +1,85 @@
+main {
+  padding-top: 2em;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+}
+
+#feeds {
+  flex: 1;
+  overflow: auto;
+  margin: 10px -20px;
+  padding: 0 20px;
+}
+
 .feed {
-	clear:both;
-	position:relative;
-	width:100%;
-	padding: 15px 0;
-	border-top:2px solid rgba(0,0,0,0.2);
-	overflow: hidden;
+  position:relative;
 }
 
-.feed:first-of-type {
-	border:none;
+.feed .flex > *:last-child {
+  margin-left: 1em;
 }
 
-label {
-	margin: 0 5px;
-	text-align: right;
-	font-size: 12px;
+.feed label {
+  display: block;
 }
 
-.form {
-	display:table;
-	width:95%;
+.feed ul.feed_errors {
+  color: var(--red-50);
+  display: block;
+  text-align:left;
+  width: 100%;
+  margin: 0;
+  margin-top: 1em;
+  padding: 0;
 }
 
-.form-row {
-	width:100%;
-	display:table-row;
-}
-
-.form-row > * {
-	display:table-cell;
-}
-
-.feed input, .feed select {
-	box-sizing: border-box;
-	width:100%;
-	margin-left:10px;
-}
-
-.feed input[type="text"]
-{
-	padding:2px;
-	border:1px solid rgb(200,200,200);
-}
-
-.feed input.error {
-	background:#FC98A2;
-}
-
-.feed ul.feed_errors
-{
-	color:#F45D4C;
-	display: block;
-	text-align:left;
-	width:100%;
-	list-style: none;
-	font-size: 12px;
+.feed ul.feed_errors:empty {
+  display: none;
 }
 
 .feed ul.feed_errors li {
-	display: inline-block;
-	width:40%;
-	margin-left:50px;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
 }
 
 .feed input.maxItems, .short {
-	width:30px;
-	text-align:center;
+  width: 5ch;
+  text-align:center;
 }
-
-.feed a.delete {
-	display:inline-block;
-	background:#FC98A2;
-	height:20px;
-	width:20px;
-	border:none;
-	position:absolute;
-	right:0px;
-	top:0px;
-	padding:0;
-	border-radius: 0;
-}
-a.delete:hover {background:#F45D4C;}
-
-a#add {
-	margin-bottom: 5px;
-}
-
-.no-feeds a#add {
-	padding:40px 0;
-}
-
-#save {
-	background:#37A640;
-	padding:20px 0;
-	font-size:18px;
-}
-#save:hover {background:#319238;}
 
 ul.options {
-	list-style: none;
-	text-align: right;
-	overflow: auto;
+  list-style: none;
+  text-align: right;
+  overflow: auto;
 }
 
 ul.options a {
-	clear:both;
-	float:right;
-	margin-bottom: 10px;
-	text-transform: lowercase;
-	font-size: 13px;
+  clear:both;
+  float:right;
+  margin-bottom: 10px;
+  text-transform: lowercase;
+  font-size: 13px;
 }
 
 #settings {
-	padding:10px;
-	float:left;
+  padding:10px;
+  float:left;
 }
 
 #settings .small {
-	font-size:10px;
-	margin-left:10px;
+  font-size:10px;
+  margin-left:10px;
 }
 
 #files {display:none;}
 
 #poll_interval_status {
-    background:rgb(210,235,210);
+  background:rgb(210,235,210);
 }
 
 #poll_interval_status.error {padding:7px;}
 
 #poll_interval_status.error {background: rgb(235,210,210);}
-
