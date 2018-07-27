@@ -15,10 +15,12 @@ async function getBookmarkFolder(feed) {
 	} else {
 		// check for parent
 		for (const child in await browser.bookmarks.getChildren(feed.parentFolderId)) {
-			children = await browser.bookmarks.getChildren(child.id);
-	    if (child.title === feed.name && children.length > 1 && children[1].type === "separator") {
-	      return child;
-	    }
+			if (child.title === feed.name) {
+				children = await browser.bookmarks.getChildren(child.id);
+		    if (children.length > 1 && children[1].type === "separator") {
+		      return child;
+		    }
+			}
 	  }
 	}
 
