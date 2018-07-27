@@ -77,7 +77,6 @@ var LivemarkManager = {
   },
   // polls each configured feed with a delay between each to reduce load all at once
   async updateFeeds() {
-    console.log(this.feeds);
     for (const feed of this.feeds) {
       await this.updateLivemark(feed);
     }
