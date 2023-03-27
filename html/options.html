@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/src/options.js" type="module"></script>
+    <link rel="stylesheet" href="/styles/pico.min.css" type="text/css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <style>
+      [data-theme="light"],
+      :root:not([data-theme="dark"]) {
+        --primary: #43a047;
+        --primary-hover: #388e3c;
+        --primary-focus: rgba(67, 160, 71, 0.125);
+        --primary-inverse: #FFF;
+      }
+
+      h1 span {
+        color: var(--primary-hover);
+      }
+
+      .material-symbols-outlined {
+        font-size: 1em;
+      }
+
+      [data-tooltip]:not(a, button, input) {
+        border: none;
+      }
+
+      .delete {
+        float: right;
+      }
+
+      h1 img {
+        height: 1.5em;
+        margin-right: 0.5em;
+        margin-bottom: 0.2em;
+      }
+
+      .actions {
+        display: flex;
+        gap: 1.5em;
+        justify-content: right;
+      }
+
+      .feed-template {
+        display: none;
+      }
+
+      button {
+        width: initial;
+      }
+
+      .feed {
+        border-top: 1px solid var(--primary-inverse);
+        padding: 1em 0 1em 1em;
+      }
+    </style>
+
+    <title>Options - Foxish Live RSS</title>
+  </head>
+
+  <body>
+    <main class="container">
+      <header>
+        <div class="grid">
+          <hgroup>
+            <h1><img src="/images/icon.svg" />Live RSS Bookmarks</h1>
+            <h2>
+              This extension mimics Firefox's old live bookmarks
+              feature (removed since 2018). It does this by creating bookmarks inside a folder for
+              each RSS feed.
+              <br />
+              <br />
+              The bookmark folders will be created in the bookmark bar but can
+              be moved to any location afterwards.
+            </h2>
+          </hgroup>
+        </div>
+      </header>
+
+      <section>
+        <form id="feeds"></form>
+      </section>
+
+      <section class="actions">
+        <button
+          id="add"
+          data-tooltip="Add a new feed to the list"
+          class="outline"
+        >
+          <span class="material-symbols-outlined">add</span> Add Feed
+        </button>
+        <button
+          type="submit"
+          id="save"
+          form="feeds"
+          role="button"
+          data-tooltip="Save the current feed configuration"
+        >
+          <span class="material-symbols-outlined">save</span> Save
+        </button>
+      </section>
+
+      <div class="feed feed-template">
+        <a
+          class="delete outline"
+          data-tooltip="remove this feed"
+          role="button"
+          href="#"
+          ><span class="material-symbols-outlined">delete</span></a
+        >
+        <input type="hidden" name="feed[].uuid" />
+        <div class="grid">
+          <label for="feed[].name"
+            >Feed Name
+            <span data-tooltip="The name to be used for the bookmark folder."
+              ><span class="material-symbols-outlined">help</span></span
+            >
+
+            <input
+              type="text"
+              name="feed[].name"
+              placeholder="Feed name"
+              required
+            />
+          </label>
+          <div></div>
+        </div>
+        <div class="grid">
+          <label>
+            RSS URL
+            <span
+              data-tooltip="The RSS feed URL that will be synced as a folder of bookmarks."
+              ><span class="material-symbols-outlined">help</span></span
+            >
+            <input
+              type="url"
+              name="feed[].rssURL"
+              placeholder="RSS feed URL"
+              pattern="https://.*"
+              required
+            />
+          </label>
+          <label
+            >site URL
+            <span
+              data-tooltip="This will add a bookmark the feeds folder to open the website that is providing the feed."
+              ><span class="material-symbols-outlined">help</span></span
+            >
+            <input
+              type="url"
+              pattern="https://.*"
+              name="feed[].url"
+              placeholder="Site URL"
+            />
+          </label>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

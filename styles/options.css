@@ -1,133 +1,214 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+  font-family: 'Open Sans', arial;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1.2em;
+}
+
+div#logo {
+  float: left;
+  width: 160px;
+  margin: 0 30px 0 20px;
+}
+
+div#logo img {
+  margin-left: 11px;
+}
+
+div#logo .title {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+div#blurb {
+  padding: 12px;
+  min-height: 120px;
+  margin-bottom: 15px;
+}
+
+div#blurb div.subheading {
+  margin-top: 10px;
+  text-align: center;
+}
+
+span.important {
+  text-decoration: underline;
+}
+
+div#blurb h1 {
+  text-align: center;
+  font-size: 1.2em;
+  margin: 10px 0;
+  color: rgb(130, 135, 155);
+}
+
+div#blurb .subheading a {
+  display: inline-block;
+  background: #2887B1;
+  color: white;
+  padding: 5px;
+  text-decoration: none;
+}
+
+div#blurb .subheading a:hover {
+  background: #227295;
+}
+
+div.spacer {
+  width: 85%;
+  border-top: 2px solid black;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  clear: both;
+}
+
+a.button {
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  border-radius: 3px;
+  color: black;
+  padding: 13px 10px 11px 10px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+  color: white;
+  background: #2887B1;
+}
+
+a.button:hover {
+  background: #227295;
+}
+
 .feed {
-	clear:both;
-	position:relative;
-	width:100%;
-	padding: 15px 0;
-	border-top:2px solid rgba(0,0,0,0.2);
-	overflow: hidden;
+  margin-top: 1em;
+  border-bottom: 1px solid grey;
+  padding: 1em 0;
 }
 
 .feed:first-of-type {
-	border:none;
+  border: none;
 }
 
 label {
-	margin: 0 5px;
-	text-align: right;
-	font-size: 12px;
+  margin: 0 5px;
+  text-align: right;
 }
 
 .form {
-	display:table;
-	width:95%;
+  display: flex;
+  gap: 2em;
 }
 
-.form-row {
-	width:100%;
-	display:table-row;
+.form div {
+  display: flex;
+  flex: 1;
 }
 
-.form-row > * {
-	display:table-cell;
+
+.form div:not(:first-of-type) input {
+  flex-grow: 1;
 }
 
-.feed input, .feed select {
-	box-sizing: border-box;
-	width:100%;
-	margin-left:10px;
-}
-
-.feed input[type="text"]
-{
-	padding:2px;
-	border:1px solid rgb(200,200,200);
+.feed input[type="text"] {
+  font-size: 1.1em;
+  padding: 0.2em;
 }
 
 .feed input.error {
-	background:#FC98A2;
+  border-color: #FC98A2;
 }
 
-.feed ul.feed_errors
-{
-	color:#F45D4C;
-	display: block;
-	text-align:left;
-	width:100%;
-	list-style: none;
-	font-size: 12px;
+.feed ul.feed_errors {
+  color: #F45D4C;
+  display: block;
+  text-align: left;
+  width: 100%;
+  list-style: none;
 }
 
 .feed ul.feed_errors li {
-	display: inline-block;
-	width:40%;
-	margin-left:50px;
+  display: inline-block;
+  width: 40%;
+  margin-left: 50px;
 }
 
-.feed input.maxItems, .short {
-	width:30px;
-	text-align:center;
+.feed input.maxItems,
+.short {
+  width: 30px;
+  text-align: center;
 }
 
 .feed a.delete {
-	display:inline-block;
-	background:#FC98A2;
-	height:20px;
-	width:20px;
-	border:none;
-	position:absolute;
-	right:0px;
-	top:0px;
-	padding:0;
-	border-radius: 0;
+  display: inline-block;
+  background: #FC98A2;
+  height: 20px;
+  width: 20px;
+  border: none;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  padding: 0;
+  border-radius: 0;
 }
-a.delete:hover {background:#F45D4C;}
+
+a.delete:hover {
+  background: #F45D4C;
+}
 
 a#add {
-	margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .no-feeds a#add {
-	padding:40px 0;
+  padding: 40px 0;
 }
 
 #save {
-	background:#37A640;
-	padding:20px 0;
-	font-size:18px;
+  background: #37A640;
+  padding: 20px 0;
 }
-#save:hover {background:#319238;}
+
+#save:hover {
+  background: #319238;
+}
 
 ul.options {
-	list-style: none;
-	text-align: right;
-	overflow: auto;
+  list-style: none;
+  text-align: right;
+  overflow: auto;
 }
 
 ul.options a {
-	clear:both;
-	float:right;
-	margin-bottom: 10px;
-	text-transform: lowercase;
-	font-size: 13px;
+  clear: both;
+  float: right;
+  margin-bottom: 10px;
 }
 
 #settings {
-	padding:10px;
-	float:left;
+  padding: 10px;
+  float: left;
 }
 
 #settings .small {
-	font-size:10px;
-	margin-left:10px;
+  margin-left: 10px;
 }
 
-#files {display:none;}
+#files {
+  display: none;
+}
 
 #poll_interval_status {
-    background:rgb(210,235,210);
+  background: rgb(210, 235, 210);
 }
 
-#poll_interval_status.error {padding:7px;}
+#poll_interval_status.error {
+  padding: 7px;
+}
 
-#poll_interval_status.error {background: rgb(235,210,210);}
-
+#poll_interval_status.error {
+  background: rgb(235, 210, 210);
+}
