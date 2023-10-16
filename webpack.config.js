@@ -6,6 +6,7 @@ var options = {
   devtool: 'source-map',
   entry: {
     background: path.join(__dirname, 'src', 'background.js'),
+    options: path.join(__dirname, 'src', 'options.js'),
   },
   output: {
     path: path.join(__dirname, 'build'),
