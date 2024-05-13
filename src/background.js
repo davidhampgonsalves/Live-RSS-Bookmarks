@@ -8,10 +8,6 @@ async function init() {
   const config = await loadConfig();
 
   console.log("using configuration", JSON.stringify(config));
-  chrome.alarms.clearAll();
-  chrome.alarms.create("poll", { periodInMinutes: 20 });
-  chrome.alarms.onAlarm.addListener(() => updateFeeds(config));
-
   updateFeeds(config);
 }
 
@@ -38,12 +34,10 @@ async function deleteRemovedFeedFolders(config) {
 
 const FOLDER_KEY_SUFFIX = "_folder_id";
 
-async function updateFeedBookmarks(feed) {
-  console.log("updating", feed);
+async function findOrCreateFolder(feed) {
   const folderKey = feed.uuid + FOLDER_KEY_SUFFIX;
   let folderId = (await chrome.storage.sync.get())[folderKey];
   console.log("read rolderID", folderId);
-
   if (folderId !== undefined)
     try {
       await chrome.bookmarks.get(folderId);
@@ -63,6 +57,12 @@ async function updateFeedBookmarks(feed) {
     await chrome.storage.sync.set({ [folderKey]: folder.id });
     folderId = folder.id;
   }
+  return folderId;
+}
+
+async function updateFeedBookmarks(feed) {
+  console.log("updating", feed);
+  const folderId = await findOrCreateFolder(feed);
 
   // fetch feed
   const parser = new RSSParser();
@@ -73,30 +73,30 @@ async function updateFeedBookmarks(feed) {
     return console.error(feed.name, e);
   }
 
-  // clear the existing bookmarks
+  // remove existing bookmarks
   const children = await chrome.bookmarks.getChildren(folderId);
   await Promise.all(children.map((c) => chrome.bookmarks.remove(c.id)));
 
+  // create new bookmarks
   for (const item of rss.items) {
-    await chrome.bookmarks.create({
-      title: he.decode(item.title),
-      url: item.link,
-      parentId: folderId,
-    });
+    await chrome.bookmarks.create({ title: he.decode(item.title), url: item.link, parentId: folderId });
   }
 
-  await chrome.bookmarks.create({
-    title: `Open ${feed.name}`,
-    url: feed.url,
-    parentId: folderId,
-  });
+  await chrome.bookmarks.create({ title: `Open ${feed.name}`, url: feed.url, parentId: folderId });
 }
 
-// if config changes re-init to pickup changes
 chrome.storage.onChanged.addListener(async ({ config }) => {
-  console.log("storage on change called");
   await deleteRemovedFeedFolders(config);
   if (config?.newValue) init();
+});
+
+chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+  await chrome.alarms.clear("poll");
+  await chrome.alarms.create("poll", { periodInMinutes: 20 }); // does this run in 20 or now AND in 20?
+  chrome.alarms.onAlarm.addListener(async () => {
+    const config = await loadConfig();
+    updateFeeds(config)
+  });
 });
 
 init();
