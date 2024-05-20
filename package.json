@@ -7,6 +7,7 @@
   "private": false,
   "devDependencies": {
     "buffer": "^6.0.3",
+    "chrome-types": "^0.1.283",
     "http-browserify": "^1.7.0",
     "https-browserify": "^1.0.0",
     "process": "^0.11.10",
