@@ -4,40 +4,68 @@ import he from "he";
 
 const BOOKMARK_BAR_ID = "1";
 
+/**
+ * Storage change 
+ * @typedef {Object} StorageChange
+ * @property {import("./config.js").FeedConfig} [newValue]
+ * @property {import("./config.js").FeedConfig} [oldValue]
+ */
+
+/**
+ * Initializes
+ * @returns {Promise<void>} 
+ */
 async function init() {
   const config = await loadConfig();
 
   console.log("using configuration", JSON.stringify(config));
-  updateFeeds(config);
+  await updateFeeds(config);
 }
 
-//polls each configured feed with a delay between each to reduce load all at once
+/**
+ * Polls each configured feed with a delay between each to reduce load all at once
+ * @param {import("./config.js").FeedConfig} config
+ * @returns {Promise<void>} 
+ */
 async function updateFeeds(config) {
-  config.feeds.forEach(updateFeedBookmarks);
+  for (const feed of config.feeds) {
+    await updateFeedBookmarks(feed);
+  }
 }
 
+/**
+ * Deletes bookmarks folders removed from config
+ * @param {StorageChange} config 
+ * @returns {Promise<void>}
+ */
 async function deleteRemovedFeedFolders(config) {
   console.log("calling delete");
   if (!config?.newValue || !config?.oldValue) return;
 
   const { newValue, oldValue } = config;
   console.log("iterating over", oldValue.feeds);
-  oldValue.feeds.forEach(async (feed) => {
-    if (newValue.feeds.find((newFeed) => newFeed.uuid === feed.uuid)) return;
+  for (const feed of oldValue.feeds) {
+    // Skip delete if item exists in new config and old config
+    if (newValue.feeds.find((newFeed) => newFeed.uuid === feed.uuid)) continue;
 
     const folderKey = feed.uuid + FOLDER_KEY_SUFFIX;
     const folderId = (await chrome.storage.sync.get())[folderKey];
     console.log("removing folder", folderId);
-    chrome.bookmarks.removeTree(folderId);
-  });
+    await chrome.bookmarks.removeTree(folderId);
+  }
 }
 
 const FOLDER_KEY_SUFFIX = "_folder_id";
 
+/**
+ * Finds or creates bookmarks folder by feed item
+ * @param {import("./config.js").FeedItem} feed 
+ * @returns {Promise<string>} Folder ID
+ */
 async function findOrCreateFolder(feed) {
   const folderKey = feed.uuid + FOLDER_KEY_SUFFIX;
   let folderId = (await chrome.storage.sync.get())[folderKey];
-  console.log("read rolderID", folderId);
+  console.log("read folderID", folderId);
   if (folderId !== undefined)
     try {
       await chrome.bookmarks.get(folderId);
@@ -60,6 +88,11 @@ async function findOrCreateFolder(feed) {
   return folderId;
 }
 
+/**
+ * Updates feed item bookmarks
+ * @param {import("./config.js").FeedItem} feed 
+ * @returns {Promise<void>}
+ */
 async function updateFeedBookmarks(feed) {
   console.log("updating", feed);
   const folderId = await findOrCreateFolder(feed);
@@ -87,7 +120,9 @@ async function updateFeedBookmarks(feed) {
 
 chrome.storage.onChanged.addListener(async ({ config }) => {
   await deleteRemovedFeedFolders(config);
-  if (config?.newValue) init();
+  if (config?.newValue) {
+    await init();
+  }
 });
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
@@ -95,8 +130,10 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   await chrome.alarms.create("poll", { periodInMinutes: 20 }); // does this run in 20 or now AND in 20?
   chrome.alarms.onAlarm.addListener(async () => {
     const config = await loadConfig();
-    updateFeeds(config)
+    await updateFeeds(config)
   });
 });
 
-init();
+(async () => {
+  await init();
+})();
