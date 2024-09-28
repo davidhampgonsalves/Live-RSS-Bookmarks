@@ -19,4 +19,6 @@ This extension was previously called [Foxish](https://chrome.google.com/webstore
 
 ## Packaging
 
-`zip -r live-rss.zip build/ html/ images/ styles/ manifest.json`
+```
+yarn webpack ; zip -r live-rss.zip build/ html/ images/ styles/ manifest.json
+```
