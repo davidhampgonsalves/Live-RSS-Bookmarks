@@ -134,6 +134,13 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   });
 });
 
+chrome.runtime.onMessage.addListener(async function(request, sender, sendResponse) {
+    if (request.action === "loadFeeds") {
+      const config = await loadConfig();
+      await updateFeeds(config)
+    }
+});
+
 (async () => {
   await init();
 })();
