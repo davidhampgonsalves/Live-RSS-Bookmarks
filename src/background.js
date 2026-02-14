@@ -5,7 +5,7 @@ import he from "he";
 const BOOKMARK_BAR_ID = "1";
 
 /**
- * Storage change 
+ * Storage change
  * @typedef {Object} StorageChange
  * @property {import("./config.js").FeedConfig} [newValue]
  * @property {import("./config.js").FeedConfig} [oldValue]
@@ -13,7 +13,7 @@ const BOOKMARK_BAR_ID = "1";
 
 /**
  * Initializes
- * @returns {Promise<void>} 
+ * @returns {Promise<void>}
  */
 async function init() {
   const config = await loadConfig();
@@ -25,7 +25,7 @@ async function init() {
 /**
  * Polls each configured feed with a delay between each to reduce load all at once
  * @param {import("./config.js").FeedConfig} config
- * @returns {Promise<void>} 
+ * @returns {Promise<void>}
  */
 async function updateFeeds(config) {
   for (const feed of config.feeds) {
@@ -35,7 +35,7 @@ async function updateFeeds(config) {
 
 /**
  * Deletes bookmarks folders removed from config
- * @param {StorageChange} config 
+ * @param {StorageChange} config
  * @returns {Promise<void>}
  */
 async function deleteRemovedFeedFolders(config) {
@@ -59,38 +59,51 @@ const FOLDER_KEY_SUFFIX = "_folder_id";
 
 /**
  * Finds or creates bookmarks folder by feed item
- * @param {import("./config.js").FeedItem} feed 
+ * @param {import("./config.js").FeedItem} feed
  * @returns {Promise<string>} Folder ID
  */
 async function findOrCreateFolder(feed) {
   const folderKey = feed.uuid + FOLDER_KEY_SUFFIX;
   let folderId = (await chrome.storage.sync.get())[folderKey];
-  console.log("read folderID", folderId);
+  console.log("findOrCreate folderID", folderId);
   if (folderId !== undefined)
     try {
       await chrome.bookmarks.get(folderId);
+      return folderId;
     } catch {
-      // folder does not exist so do not use this id (a new folder will get created)
+      // folder does not exist so do not use this id
       folderId = undefined;
     }
 
-  if (folderId === undefined) {
-    const folder = await chrome.bookmarks.create({
-      title: feed.name,
-      parentId: BOOKMARK_BAR_ID,
-    });
-    console.log(`setting folder for ${feed.uuid} to`, folder.id, "via", {
-      [folderKey]: folder.id,
-    });
-    await chrome.storage.sync.set({ [folderKey]: folder.id });
-    folderId = folder.id;
+  console.log("findOrCreate folderID not found, checking by name");
+  // folder id check failed, check based on name + presence of the feed open bookmark
+  const bookmarks = (await chrome.bookmarks.search({ title: feed.name }))
+  for(const bk of bookmarks) {
+    if(bk.url) continue; // skip non-folders
+
+    const children = await chrome.bookmarks.getChildren(bk.id);
+    const feedBookmark = children.find(bk => bk.url == feed.url);
+    if(children.length === 0 || feedBookmark) {
+      await chrome.storage.sync.set({ [folderKey]: bk.id });
+      return bk.id;
+    }
   }
-  return folderId;
+
+  console.log("findOrCreate name not found, creating folder");
+  // folder was not found, create folder
+  const folder = await chrome.bookmarks.create({
+    title: feed.name,
+    parentId: BOOKMARK_BAR_ID,
+  });
+  console.log(`setting folder for ${feed.uuid} to`, folder.id, "via", { [folderKey]: folder.id });
+  await chrome.storage.sync.set({ [folderKey]: folder.id });
+
+  return folder.id;
 }
 
 /**
  * Updates feed item bookmarks
- * @param {import("./config.js").FeedItem} feed 
+ * @param {import("./config.js").FeedItem} feed
  * @returns {Promise<void>}
  */
 async function updateFeedBookmarks(feed) {
