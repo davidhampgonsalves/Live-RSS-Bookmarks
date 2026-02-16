@@ -23,7 +23,10 @@ function addFeed(feed = { uuid: crypto.randomUUID() }, i = null) {
   //set the new fields values if they were passed in
   for (const field in feed) {
     const input = newFeed.querySelector(`input[name='feed[].${field}']`);
-    if (feed[field] != null) input.value = feed[field];
+    if (feed[field] != null) {
+      if (input.type === "checkbox") input.checked = feed[field];
+      else input.value = feed[field];
+    }
   }
 
   for (const input of newFeed.querySelectorAll(`input`)) {

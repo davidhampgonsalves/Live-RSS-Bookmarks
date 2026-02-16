@@ -77,7 +77,7 @@
               be moved to any location afterwards.
               <br />
               <br />
-              ⚠️ Bookmark syncing between multiple devices will cause duplicate folders and is not supported.
+              &#9888; Bookmark syncing between multiple devices will cause duplicate folders and is not supported &#9888;
             </h2>
           </hgroup>
         </div>
@@ -127,6 +127,29 @@
               name="feed[].name"
               placeholder="Feed name"
               required
+            />
+          </label>
+          <label for="feed[].filter"
+            >Feed Filter
+            <span data-tooltip="The regex to filter out feed items."
+              ><span class="material-symbols-outlined">help</span></span
+            >
+
+            <input
+              type="text"
+              name="feed[].filter"
+              placeholder="Feed filter"
+            />
+          </label>
+          <label for="feed[].stripParameters"
+            >Strip Parameters
+            <span data-tooltip="Strips parameters from the feed URL. 'www.xyz.com/site?trackU=887' -> 'www.xyz.com/site'"
+              ><span class="material-symbols-outlined">help</span></span
+            >
+            </br>
+            <input
+              type="checkbox"
+              name="feed[].stripParameters"
             />
           </label>
           <div></div>

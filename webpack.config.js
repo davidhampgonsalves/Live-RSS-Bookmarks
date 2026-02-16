@@ -7,6 +7,7 @@ var options = {
   entry: {
     background: path.join(__dirname, 'src', 'background.js'),
     options: path.join(__dirname, 'src', 'options.js'),
+    popup: path.join(__dirname, 'src', 'popup.js'),
   },
   output: {
     path: path.join(__dirname, 'build'),

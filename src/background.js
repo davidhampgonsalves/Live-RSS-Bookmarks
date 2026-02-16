@@ -11,6 +11,19 @@ const BOOKMARK_BAR_ID = "1";
  * @property {import("./config.js").FeedConfig} [oldValue]
  */
 
+
+function stripUrlParameters(url) {
+  try {
+    const u = new URL(url);
+    u.search = '';
+    u.hash = '';
+    return u.href;
+  } catch (e) {
+    // fallback for relative URLs
+    return url.split(/[?#]/)[0];
+  }
+}
+
 /**
  * Initializes
  * @returns {Promise<void>}
@@ -125,7 +138,15 @@ async function updateFeedBookmarks(feed) {
 
   // create new bookmarks
   for (const item of rss.items) {
-    await chrome.bookmarks.create({ title: he.decode(item.title), url: item.link, parentId: folderId });
+    const pattern = new RegExp(feed.filter);
+    const title = he.decode(item.title);
+    if (feed.filter.length > 0 && pattern.test(title)) {
+      console.log("Skipped ", title);
+    }
+    else {
+      const url = feed.stripParameters ? stripUrlParameters(item.link) : item.link;
+      await chrome.bookmarks.create({ title: title, url: url, parentId: folderId });
+    }
   }
 
   await chrome.bookmarks.create({ title: `Open ${feed.name}`, url: feed.url, parentId: folderId });
@@ -139,12 +160,23 @@ chrome.storage.onChanged.addListener(async ({ config }) => {
 });
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-  await chrome.alarms.clear("poll");
-  await chrome.alarms.create("poll", { periodInMinutes: 20 }); // does this run in 20 or now AND in 20?
+  const alarm = await chrome.alarms.get("poll");
+  if (!alarm) {
+    await chrome.alarms.create("poll", {
+      delayInMinutes: 0.5, // min delay
+      periodInMinutes: 20 });
+  }
   chrome.alarms.onAlarm.addListener(async () => {
     const config = await loadConfig();
     await updateFeeds(config)
   });
+});
+
+chrome.runtime.onMessage.addListener(async function(request, sender, sendResponse) {
+    if (request.action === "loadFeeds") {
+      const config = await loadConfig();
+      await updateFeeds(config)
+    }
 });
 
 (async () => {
