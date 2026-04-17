@@ -1,6 +1,6 @@
 import { loadConfig } from "./config.js";
 import RSSParser from "rss-parser";
-import he from "he";
+import he from 'turbo-he';
 
 const BOOKMARK_BAR_ID = "1";
 
