@@ -24,5 +24,6 @@
   "dependencies": {
     "he": "^1.2.0",
     "lodash.unescape": "^4.0.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }

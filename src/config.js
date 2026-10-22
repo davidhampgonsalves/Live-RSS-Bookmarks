@@ -7,6 +7,9 @@ const DEFAULT_CONFIG = { feeds: [] };
  * @property {string} name - Feed name
  * @property {string} rssURL - RSS feed URL
  * @property {string} url - Site URL
+ * @property {string} [filter] - Regex filter for items
+ * @property {boolean} [stripParameters] - Whether to strip URL parameters
+ * @property {string} [addParameters] - Parameters to append to bookmark URLs
  */
 
 /**

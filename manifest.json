@@ -4,6 +4,15 @@
     "service_worker": "build/background.js",
     "type": "module"
   },
+  "action": {
+    "default_popup": "html/popup.html",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "32": "images/icon32.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
   "name": "Live RSS Bookmarks",
   "description": "Sync RSS feeds with bookmark folders",
   "icons": {
@@ -15,12 +24,14 @@
   "options_page": "html/options.html",
   "permissions": [
     "bookmarks",
+    "history",
     "alarms",
-    "storage"
+    "storage",
+    "activeTab",
+    "scripting",
+    "idle",
+    "tabs"
   ],
-  "host_permissions": [
-    "http://*/",
-    "https://*/"
-  ],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "version": "5.1.4"
 }

@@ -23,7 +23,10 @@ function addFeed(feed = { uuid: crypto.randomUUID() }, i = null) {
   //set the new fields values if they were passed in
   for (const field in feed) {
     const input = newFeed.querySelector(`input[name='feed[].${field}']`);
-    if (feed[field] != null) input.value = feed[field];
+    if (input && feed[field] != null) {
+      if (input.type === "checkbox") input.checked = feed[field];
+      else input.value = feed[field];
+    }
   }
 
   for (const input of newFeed.querySelectorAll(`input`)) {
@@ -59,11 +62,11 @@ function onSave(event) {
     const formIndex = key.replace(/\D/g, "");
     // Since removals can result in missing form key indexes we just use them to
     // check when we are on a new entity
-    if(formIndex != lastFormIndex) {
+    if (formIndex != lastFormIndex) {
       lastFormIndex = formIndex;
-      feeds.push({})
+      feeds.push({});
     }
-    feeds[feeds.length-1][key.replace(/.+\./g, "")] = value;
+    feeds[feeds.length - 1][key.replace(/.+\./g, "")] = value;
   }
   const config = { feeds };
 
@@ -77,7 +80,7 @@ function onSave(event) {
   if (previousTimeout) window.clearTimeout(previousTimeout);
   previousTimeout = window.setTimeout(
     () => (saveButton.innerHTML = saveMsg),
-    2000
+    2000,
   );
 }
 
