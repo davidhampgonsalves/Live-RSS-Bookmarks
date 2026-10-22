@@ -216,11 +216,13 @@ async function updateFeedBookmarks(feed) {
     );
   }
 
+  const children = await chrome.bookmarks.getChildren(folderId);
+
   // analyze which bookmarks have been opened and which haven't
-  updateVisitedMap(bookmarks);
+  updateVisitedMap(children);
 
   // remove existing bookmarks
-  await Promise.all(bookmarks.map((c) => chrome.bookmarks.remove(c.id)));
+  await Promise.all(children.map((c) => chrome.bookmarks.remove(c.id)));
 
   // create new bookmarks
   for (const item of rss.items) {
